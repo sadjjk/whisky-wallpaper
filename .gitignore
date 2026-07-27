@@ -25,3 +25,5 @@ test.txt
 
 # Settings.json backups created by install-hooks.sh
 *.bak.*
+.agent-undo/
+release/

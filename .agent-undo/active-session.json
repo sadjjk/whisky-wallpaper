@@ -1,7 +1,0 @@
-{
-  "session_id": "session-c759958770b046608c5f6bbdae70d603",
-  "agent": "openclaw/subagent",
-  "started_at_ns": 1785121805065125000,
-  "tool_name": "exec",
-  "intended_file": null
-}
