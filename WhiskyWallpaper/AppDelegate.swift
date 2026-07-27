@@ -15,7 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = NSImage(systemSymbolName: "sparkles",
-                                            accessibilityDescription: "Whisky Wallpaper")
+                                            accessibilityDescription: Lang.t("accessibility"))
 
         player = WallpaperPlayer()
         windowController = WallpaperWindowController(player: player)
@@ -96,15 +96,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let currentURL = SettingsManager.shared.currentWallpaperURL
         let nowTitle: String = {
-            if let url = currentURL { return "Now playing: \(prettyName(url))" }
-            return "No wallpaper selected"
+            if let url = currentURL { return Lang.t("now_playing") + prettyName(url) }
+            return Lang.t("no_wallpaper")
         }()
         let nowItem = NSMenuItem(title: nowTitle, action: nil, keyEquivalent: "")
         nowItem.isEnabled = false
         menu.addItem(nowItem)
 
         if let mins = playlist.minutesUntilNextRotation {
-            let label = mins == 0 ? "Rotating now…" : "Next change in \(mins)m"
+            let label = mins == 0 ? Lang.t("rotating_now") : Lang.t("next_change").replacingOccurrences(of: "{X}", with: "\(mins)")
             let nextItem = NSMenuItem(title: label, action: nil, keyEquivalent: "")
             nextItem.isEnabled = false
             menu.addItem(nextItem)
@@ -112,13 +112,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let pickItem = NSMenuItem(title: "Pick wallpaper file…",
+        let pickItem = NSMenuItem(title: Lang.t("pick_file"),
                                    action: #selector(pickWallpaperAction),
                                    keyEquivalent: "o")
         pickItem.target = self
         menu.addItem(pickItem)
 
-        let folderItem = NSMenuItem(title: "Pick wallpaper folder…",
+        let folderItem = NSMenuItem(title: Lang.t("pick_folder"),
                                      action: #selector(pickFolderAction),
                                      keyEquivalent: "f")
         folderItem.target = self
@@ -126,11 +126,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let rotationItem = NSMenuItem(title: "Rotation", action: nil, keyEquivalent: "")
+        let rotationItem = NSMenuItem(title: Lang.t("rotation"), action: nil, keyEquivalent: "")
         let rotationSub = NSMenu()
         let currentRotation = SettingsManager.shared.rotationIntervalMinutes
         for mins in SettingsManager.rotationChoices {
-            let title = mins == 0 ? "Off" : "Every \(mins) minutes"
+            let title = mins == 0 ? Lang.t("rotation_off") : Lang.t("rotation_every").replacingOccurrences(of: "{X}", with: "\(mins)")
             let item = NSMenuItem(title: title,
                                    action: #selector(setRotationAction(_:)),
                                    keyEquivalent: "")
@@ -140,7 +140,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             rotationSub.addItem(item)
         }
         rotationSub.addItem(NSMenuItem.separator())
-        let nowSwitchItem = NSMenuItem(title: "Switch to random now",
+        let nowSwitchItem = NSMenuItem(title: Lang.t("switch_random"),
                                         action: #selector(rotateNowAction),
                                         keyEquivalent: "n")
         nowSwitchItem.target = self
@@ -150,11 +150,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(rotationItem)
 
         let playlistCount = playlist.currentPlaylist.count
-        let playlistItem = NSMenuItem(title: "Playlist (\(playlistCount) videos)",
+        let playlistItem = NSMenuItem(title: Lang.t("playlist").replacingOccurrences(of: "{X}", with: "\(playlistCount)"),
                                        action: nil, keyEquivalent: "")
         let playlistSub = NSMenu()
         if playlistCount == 0 {
-            let empty = NSMenuItem(title: "No videos in folder", action: nil, keyEquivalent: "")
+            let empty = NSMenuItem(title: Lang.t("no_videos"), action: nil, keyEquivalent: "")
             empty.isEnabled = false
             playlistSub.addItem(empty)
         } else {
@@ -174,30 +174,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let pauseTitle = SettingsManager.shared.isPaused ? "Resume" : "Pause"
+        let pauseTitle = SettingsManager.shared.isPaused ? Lang.t("resume") : Lang.t("pause")
         let pauseItem = NSMenuItem(title: pauseTitle,
                                     action: #selector(togglePauseAction),
                                     keyEquivalent: "p")
         pauseItem.target = self
         menu.addItem(pauseItem)
 
-        let reloadItem = NSMenuItem(title: "Reload wallpaper",
+        let reloadItem = NSMenuItem(title: Lang.t("reload"),
                                      action: #selector(reloadAction),
                                      keyEquivalent: "r")
         reloadItem.target = self
         menu.addItem(reloadItem)
 
         let lockSyncTitle = SettingsManager.shared.isLockScreenSyncEnabled
-            ? "Lock-screen sync: On"
-            : "Lock-screen sync: Off"
+            ? Lang.t("lock_sync_on")
+            : Lang.t("lock_sync_off")
         let lockSyncItem = NSMenuItem(title: lockSyncTitle,
                                        action: #selector(toggleLockScreenSyncAction),
                                        keyEquivalent: "l")
         lockSyncItem.target = self
-        lockSyncItem.toolTip = "When on, Whisky registers the current video as an aerial in System Settings → Wallpaper and sets a still frame of it as the lock-screen image."
+        lockSyncItem.toolTip = Lang.t("lock_sync_tooltip")
         menu.addItem(lockSyncItem)
 
-        let revealItem = NSMenuItem(title: "Reveal in Finder",
+        let revealItem = NSMenuItem(title: Lang.t("reveal_finder"),
                                      action: #selector(revealInFinderAction),
                                      keyEquivalent: "")
         revealItem.target = self
@@ -206,7 +206,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let quitItem = NSMenuItem(title: "Quit Whisky Wallpaper",
+        // 语言子菜单
+        let langItem = NSMenuItem(title: Lang.t("language"), action: nil, keyEquivalent: "")
+        let langSub = NSMenu()
+
+        let zhItem = NSMenuItem(title: Lang.t("lang_chinese"),
+                               action: #selector(setLanguageAction(_:)),
+                               keyEquivalent: "")
+        zhItem.target = self
+        zhItem.tag = 0
+        zhItem.state = (Lang.current == .chinese) ? .on : .off
+        langSub.addItem(zhItem)
+
+        let enItem = NSMenuItem(title: Lang.t("lang_english"),
+                               action: #selector(setLanguageAction(_:)),
+                               keyEquivalent: "")
+        enItem.target = self
+        enItem.tag = 1
+        enItem.state = (Lang.current == .english) ? .on : .off
+        langSub.addItem(enItem)
+
+        langItem.submenu = langSub
+        menu.addItem(langItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let quitItem = NSMenuItem(title: Lang.t("quit"),
                                    action: #selector(NSApplication.terminate(_:)),
                                    keyEquivalent: "q")
         quitItem.target = NSApp
@@ -228,8 +253,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             UTType.movie, UTType.video, UTType.mpeg4Movie, UTType.quickTimeMovie,
         ]
         panel.directoryURL = SettingsManager.shared.wallpaperFolderURL
-        panel.prompt = "Set as wallpaper"
-        panel.message = "Pick a video file — .mov, .mp4, or any QuickTime-playable format."
+        panel.prompt = Lang.t("set_as_wallpaper")
+        panel.message = Lang.t("pick_video_message")
 
         NSApp.activate(ignoringOtherApps: true)
         guard panel.runModal() == .OK, let url = panel.url else { return }
@@ -243,8 +268,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
         panel.directoryURL = SettingsManager.shared.wallpaperFolderURL
-        panel.prompt = "Use as wallpaper folder"
-        panel.message = "Pick a folder — Whisky Wallpaper will rotate through its .mp4 / .mov files."
+        panel.prompt = Lang.t("use_as_folder")
+        panel.message = Lang.t("pick_folder_message")
 
         NSApp.activate(ignoringOtherApps: true)
         guard panel.runModal() == .OK, let url = panel.url else { return }
@@ -279,6 +304,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Just disabled — remove our aerials so we don't pollute the user's picker
             aerialInstaller.removeAllManagedAerials()
             currentAerialUUID = nil
+        }
+        rebuildMenu()
+    }
+
+    @objc private func setLanguageAction(_ sender: NSMenuItem) {
+        if sender.tag == 0 {
+            Lang.current = .chinese
+        } else {
+            Lang.current = .english
         }
         rebuildMenu()
     }
