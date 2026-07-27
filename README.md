@@ -6,40 +6,30 @@
 
 ---
 
-## 功能
-
-- 将 `.mp4` / `.mov` / `.m4v` 视频作为**桌面壁纸**播放，位于图标层下方
-- **单文件播放**或**轮播**文件夹，每 5 / 10 / 30 分钟切换
-- **所有显示器同步** — 每个屏幕一个无边框 `NSWindow`，插拔显示器时自动重建
-- 通过 `AVPlayerLooper` **无缝循环**（循环点不会出现黑帧）
-- **睡眠时暂停**，唤醒后自动恢复
-- **开机自启** — 重启后无需额外设置
-- **点击穿透** — `ignoresMouseEvents = true`，桌面图标照常点击
-- 以 `✨` 图标驻留在**菜单栏** — 没有 Dock 图标，不占任务栏空间
-
 ## 为什么做这个
 
 基于开源项目 [Whisky Wallpaper](https://github.com/voidengineer-911/whisky-wallpaper) 继续优化，目标是打造更好用的 macOS 动态壁纸体验。原项目提供了扎实的引擎基础（AVFoundation + AppKit，约 625 行 Swift），在此基础上持续改进中文化、锁屏体验、文件夹热更新等方面。
 
+### 更新日志
+
+> 本项目更新日志，按时间倒序记录。
+
+#### 2026-07-27 — 初始 fork & 中文化
+
+- Fork 自 `voidengineer-911/whisky-wallpaper`
+- 原 `README.md` 重命名为 `README_EN.md`
+- 新增中文 `README.md`（本文档）
+- 后续中英双语切换、功能改进等更新记录于此
+- 新增中英双语切换功能（Lang.swift + AppDelegate 接入 + 语言子菜单）
+
 ## 安装
 
-### 预编译版（推荐）
+### 预编译版
 
 从 [Releases 页面](https://github.com/ForceAI-KW/whisky-wallpaper/releases) 下载最新的 `Whisky.Wallpaper.app.zip`，解压后拖到 `/Applications`。
 
 首次启动：右键 → 打开（macOS Gatekeeper 会警告 — 因为是自签名，没有 Developer ID 签名）。第一次允许后，后续启动就不会再拦了。
 
-## 使用
-
-1. 把视频文件放到 `~/Downloads/` — `.mp4` / `.mov` / `.m4v`。4K H.264 60fps 最理想。免费 4K 素材来源：
-   - [MoeWalls](https://moewalls.com) — 免费，无需注册，直接下载
-   - [MyLiveWallpapers](https://mylivewallpapers.com) — 同上
-   - [Pixabay](https://pixabay.com/videos) — 免费，种类更多
-2. 点击菜单栏的 `✨` 图标。
-3. 通过「选择壁纸文件…」选择文件，或让 app 自动选中文件夹中最大的视频。
-4. 可选：开启轮播 → 每 5 / 10 / 30 分钟循环切换文件夹中的所有视频。
-
-就这样。
 
 ### 菜单结构
 
@@ -126,16 +116,3 @@ WhiskyWallpaper/
 - 原项目 [**Whisky Wallpaper**](https://github.com/voidengineer-911/whisky-wallpaper) by voidengineer-911 — 本项目基于此 fork 改造
 - 灵感来自 Cindori 的 [**Backdrop**](https://cindori.com/backdrop) — 精致的商业动态壁纸应用
 - 菜单栏 + 窗口管理脚手架与 [**Whisky Claude**](https://github.com/ForceAI-KW/whisky-claude) 共享
-
----
-
-## 更新日志
-
-> 本项目更新日志，按时间倒序记录。
-
-### 2026-07-27 — 初始 fork & 中文化
-
-- Fork 自 `voidengineer-911/whisky-wallpaper`
-- 原 `README.md` 重命名为 `README_EN.md`
-- 新增中文 `README.md`（本文档）
-- 后续中英双语切换、功能改进等更新记录于此

@@ -1,0 +1,6 @@
+[gc]
+keep_last = "7d"
+
+[watch]
+max_file_size_mb = 100
+ignore_patterns = []
