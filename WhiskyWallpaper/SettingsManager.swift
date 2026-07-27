@@ -15,6 +15,7 @@ final class SettingsManager {
     private let kRotationMinutes    = "rotationIntervalMinutes"
     private let kLockScreenSyncOn   = "lockScreenSyncEnabled"
     private let kLockScreenSyncSet  = "lockScreenSyncEnabledSetByUser"
+    private let kAppLanguage      = "appLanguage"
 
     // Rotation choices — surfaced in the menu's "Rotation" submenu.
     static let rotationChoices: [Int] = [0, 5, 10, 30]
@@ -41,6 +42,19 @@ final class SettingsManager {
         set {
             UserDefaults.standard.set(newValue, forKey: kLockScreenSyncOn)
             UserDefaults.standard.set(true, forKey: kLockScreenSyncSet)
+        }
+    }
+
+    /// 用户选择的界面语言。nil = 未设置（首次启动跟随系统语言）。
+    /// 值为 0 = 中文，1 = 英文。Lang.current 读取此值。
+    var appLanguage: Int? {
+        get {
+            if !UserDefaults.standard.bool(forKey: "appLanguageSet") { return nil }
+            return UserDefaults.standard.integer(forKey: kAppLanguage)
+        }
+        set {
+            UserDefaults.standard.set(newValue ?? 0, forKey: kAppLanguage)
+            UserDefaults.standard.set(true, forKey: "appLanguageSet")
         }
     }
 
