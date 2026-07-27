@@ -19,9 +19,7 @@
 
 ## 为什么做这个
 
-Cindori 的 [Backdrop](https://cindori.com/backdrop) 是一个做得很精美的 macOS 动态壁纸应用 — 但它是订阅制收费。实际引擎只有约 625 行简洁的 Swift 代码，调用的是公开的 AVFoundation 和 AppKit API。Whisky Wallpaper 就是那个引擎，免费且开源。
-
-如果你已经在付费使用 Backdrop 且满意，继续用就好 — 他们值这个价。这个项目给那些想要同样体验但不想订阅、偏好 FOSS、或想在此基础上自定义开发的人。
+基于开源项目 [Whisky Wallpaper](https://github.com/voidengineer-911/whisky-wallpaper) 继续优化，目标是打造更好用的 macOS 动态壁纸体验。原项目提供了扎实的引擎基础（AVFoundation + AppKit，约 625 行 Swift），在此基础上持续改进中文化、锁屏体验、文件夹热更新等方面。
 
 ## 安装
 
@@ -30,20 +28,6 @@ Cindori 的 [Backdrop](https://cindori.com/backdrop) 是一个做得很精美的
 从 [Releases 页面](https://github.com/ForceAI-KW/whisky-wallpaper/releases) 下载最新的 `Whisky.Wallpaper.app.zip`，解压后拖到 `/Applications`。
 
 首次启动：右键 → 打开（macOS Gatekeeper 会警告 — 因为是自签名，没有 Developer ID 签名）。第一次允许后，后续启动就不会再拦了。
-
-### 源码编译
-
-```bash
-git clone https://github.com/ForceAI-KW/whisky-wallpaper.git
-cd whisky-wallpaper
-./scripts/install.sh
-```
-
-脚本会：编译 Release 版本，如果登录钥匙串里有自签名证书就用它签名（默认证书名 `Ahmad Sharaf Code Signing`，可在 `scripts/install.sh` 中改），否则用 ad-hoc 签名。然后安装到 `/Applications/Whisky Wallpaper.app`，注册为登录项，启动。可重复运行。
-
-**稳定签名 & TCC 授权（v1.2.0+）：** ad-hoc 签名每次编译都变，导致已授予的 TCC 权限（AppleEvents、辅助功能等）每次重装失效。放一个自签名证书到登录钥匙串里，安装脚本就会用它 — 签名标识保持不变，权限永久保留。脚本还会检测签名身份变化，只在需要时调用 `tccutil reset`，迁移时只需一次重新授权。
-
-需要安装 Xcode 或 Command Line Tools。
 
 ## 使用
 
@@ -137,28 +121,11 @@ WhiskyWallpaper/
 - **不需要** Backdrop 或其他壁纸应用运行 — 先卸载那些，避免双重壁纸
 - **占用说明：** entitlements plist 为空（未沙盒），但应用链接 Apple 私有 `Wallpaper.framework`，开启锁屏同步（默认开）时会把视频副本、PNG 缩略图和元数据写入 `~/Library/Application Support/com.apple.wallpaper/aerials/`。详见 SECURITY.md。
 
-## 卸载
-
-```bash
-./scripts/uninstall.sh
-```
-
-移除应用、登录项和所有 `com.ahmadsharaf.WhiskyWallpaper` 下的 UserDefaults 痕迹。你的视频文件不动。
-
 ## 致谢
 
-- 灵感来自 Cindori 的 [**Backdrop**](https://cindori.com/backdrop) — 那个精致的商业应用，本项目将其引擎开源重建。
-- 菜单栏 + 窗口管理脚手架与 [**Whisky Claude**](https://github.com/ForceAI-KW/whisky-claude) 共享 — Claude Code 伴侣功能的兄弟项目。
-
-## 许可证
-
-MIT — 见 [LICENSE](./LICENSE)。
-
-你可以自由再分发、fork、修改和基于此构建商业产品。只需保留版权声明。你播放的壁纸不受此许可证约束 — 它们有自己的许可（通常是原作者的 CC-BY 或类似条款）。请尊重来源站点的声明。
-
-## Issues / 贡献
-
-Issues 和 PR 欢迎：[github.com/ForceAI-KW/whisky-wallpaper](https://github.com/ForceAI-KW/whisky-wallpaper)。关于 Force AI 生态的更广泛问题（Whisky Claude 等），见 [forcemediakw.com](https://forcemediakw.com)。
+- 原项目 [**Whisky Wallpaper**](https://github.com/voidengineer-911/whisky-wallpaper) by voidengineer-911 — 本项目基于此 fork 改造
+- 灵感来自 Cindori 的 [**Backdrop**](https://cindori.com/backdrop) — 精致的商业动态壁纸应用
+- 菜单栏 + 窗口管理脚手架与 [**Whisky Claude**](https://github.com/ForceAI-KW/whisky-claude) 共享
 
 ---
 
